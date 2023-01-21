@@ -2,6 +2,7 @@ import 'package:blackout_light_on/domain/entities/settings_model.dart';
 import 'package:blackout_light_on/presentation/bloc/bloc.dart';
 import 'package:blackout_light_on/presentation/bloc/events.dart';
 import 'package:blackout_light_on/presentation/bloc/states.dart';
+import 'package:blackout_light_on/presentation/pages/saved_wifi_page.dart';
 import 'package:blackout_light_on/presentation/pages/setting_page.dart';
 import 'package:blackout_light_on/presentation/pages/wifi_page.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,11 @@ class _HomePageState extends State<HomePage> {
               ),
               const PopupMenuItem<int>(
                 value: 1,
-                child: Text("My account"),
+                child: Text("WiFi search"),
+              ),
+              const PopupMenuItem<int>(
+                value: 2,
+                child: Text("Saved WiFi"),
               ),
             ];
           },
@@ -55,23 +60,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               );
-            } else if (value == 1) {
-              ///Todo
             }
-          },
-        ),
-        title: const Text('State'),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.lightBlueAccent,
-              shape: const BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(2)),
-              ),
-              textStyle: const TextStyle(fontSize: 15),
-            ),
-            onPressed: () {
+            if (value == 1) {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (BuildContext context) => BlocProvider.value(
@@ -80,10 +70,20 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               );
-            },
-            child: const Text("WiFi list"),
-          ),
-        ],
+            }
+            if (value == 2) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => BlocProvider.value(
+                    value: mainBloc,
+                    child: const SavedWiFiPage(),
+                  ),
+                ),
+              );
+            }
+          },
+        ),
+        title: const Text('Program State'),
       ),
       //Implementing Bloc in app
       body: Column(
@@ -172,8 +172,11 @@ class _HomePageState extends State<HomePage> {
               '   3) If you use battery powersaver or background restriction, '
               'need set Light on full allowed'),
           TextButton(
-              style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(
-                  Colors.cyanAccent,),),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(
+                Colors.cyanAccent,
+              ),
+            ),
             onPressed: () {
               BlocProvider.of<MainBloc>(context).add(AskPermissionsEvent());
             },

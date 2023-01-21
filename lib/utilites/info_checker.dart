@@ -12,10 +12,8 @@ Future<bool> askDevicePermissions() async {
   final phone = await Permission.phone.request();
   if (locationIfUse == PermissionStatus.granted &&
       phone == PermissionStatus.granted) {
-    print('first granted');
     final locationAlways = await Permission.locationAlways.request();
     if (locationAlways == PermissionStatus.granted) {
-      print('3 granted');
       return true;
     }
   }

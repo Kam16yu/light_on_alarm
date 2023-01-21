@@ -16,14 +16,20 @@ class AlertUiState implements ListState {
   AlertUiState(this.data);
 }
 
-class GetWiFiListState implements ListState {
+class GetWiFiState implements ListState {
   final List<List<String>> wifi;
 
-  GetWiFiListState(this.wifi);
+  GetWiFiState(this.wifi);
 }
 
 class GetSettingsState implements ListState {
   final Settings settings;
 
   GetSettingsState(this.settings);
+}
+
+class GetSavedWiFiState implements ListState {
+  final List<List<String>> wifi;
+
+  GetSavedWiFiState(this.wifi);
 }

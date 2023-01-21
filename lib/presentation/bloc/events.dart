@@ -35,5 +35,6 @@ class GetSavedWiFiEvent extends ListEvent {
 }
 
 class SaveWiFiEvent extends ListEvent {
-  SaveWiFiEvent();
+  List wifiList;
+  SaveWiFiEvent(this.wifiList);
 }

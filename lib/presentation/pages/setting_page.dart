@@ -34,6 +34,7 @@ class _SettingPageState extends State<SettingPage> {
             onPressed: () {
               if (settings != null) {
                 mainBloc.add(SaveSettingsEvent(settings!));
+                mainBloc.add(InitEvent());
               }
             },
             icon: const Icon(Icons.save),
@@ -121,7 +122,7 @@ class _SettingPageState extends State<SettingPage> {
                 Row(
                   children: [
                     const Text(
-                      'mobile network type',
+                      'Mobile network type',
                       style: TextStyle(fontSize: 17.0),
                     ),
                     Checkbox(

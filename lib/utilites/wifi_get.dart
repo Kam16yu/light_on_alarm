@@ -1,18 +1,16 @@
-import 'package:flutter/foundation.dart';
 import 'package:wifi_scan/wifi_scan.dart';
-
+///false - Not get WiFi - not granted permissions, or not active Location
 Future<bool> startScan() async {
   // check platform support and necessary requirements
   final can = await WiFiScan.instance.canStartScan();
-
-    if (can == CanStartScan.yes) {
+  print(can);
+  if (can == CanStartScan.yes) {
+    final result = await WiFiScan.instance.startScan();
+    if (result) {
       return true;
-    } else {
-      if (kDebugMode) {
-        print(can);
-      }
-      return false;
     }
+  }
+  return false;
 }
 
 ///Return List<WiFiAccessPoint> or null if error
@@ -21,7 +19,7 @@ Future<List<WiFiAccessPoint>?> getScannedResults() async {
   final can = await WiFiScan.instance.canGetScannedResults();
   if (can == CanGetScannedResults.yes) {
     final accessPoints = await WiFiScan.instance.getScannedResults();
-  return accessPoints;
+    return accessPoints;
   }
   return null;
 }

@@ -4,21 +4,20 @@ import 'package:blackout_light_on/presentation/bloc/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class WiFiPage extends StatefulWidget {
-  const WiFiPage({super.key});
+class SavedWiFiPage extends StatefulWidget {
+  const SavedWiFiPage({super.key});
 
   @override
-  State<WiFiPage> createState() => _WiFiPageState();
+  State<SavedWiFiPage> createState() => _SavedWiFiPageState();
 }
 
-class _WiFiPageState extends State<WiFiPage> {
-  List<List<String>> wifiList = [];
-  Map<int, List<String>> wifiForSave = {};
+class _SavedWiFiPageState extends State<SavedWiFiPage> {
+  List<List<String>> savedWiFiList = [];
 
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<MainBloc>(context).add(GetWiFIEvent());
+    BlocProvider.of<MainBloc>(context).add(GetSavedWiFiEvent());
   }
 
   @override
@@ -27,15 +26,15 @@ class _WiFiPageState extends State<WiFiPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search WiFi...'),
+        title: const Text('Saved WiFi'),
         centerTitle: true,
       ),
       body: Column(
         children: [
           BlocConsumer<MainBloc, ListState>(
             listener: (context, state) {
-              if (state is GetWiFiState) {
-                wifiList = state.wifi;
+              if (state is GetSavedWiFiState) {
+                savedWiFiList = state.wifi;
               }
               if (state is AlertUiState) {
                 final String info = state.data;
@@ -50,9 +49,9 @@ class _WiFiPageState extends State<WiFiPage> {
             builder: (context, state) {
               return Expanded(
                 child: ListView.builder(
-                  itemCount: wifiList.length,
+                  itemCount: savedWiFiList.length,
                   itemBuilder: (context, index) {
-                    final List<String> wifi = wifiList[index];
+                    final List<String> wifi = savedWiFiList[index];
                     return Card(
                       elevation: 5,
                       shape: RoundedRectangleBorder(
@@ -70,23 +69,20 @@ class _WiFiPageState extends State<WiFiPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text('Name: ${wifi[0]}'),
-                                Text('SSID: ${wifi[1]}'),
+                                Text(
+                                  'SSID: ${wifi[1]}',
+                                ),
                               ],
                             ),
                           ),
-                          Checkbox(
-                            value: wifiForSave.containsKey(index),
-                            onChanged: (bool? value) {
-                              if (value == true) {
-                                setState(() {
-                                  wifiForSave[index] = wifi;
-                                });
-                              } else {
-                                setState(() {
-                                  wifiForSave.remove(index);
-                                });
-                              }
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                savedWiFiList.removeAt(index);
+                              });
+                              mainBloc.add(SaveWiFiEvent([savedWiFiList, false]));
                             },
+                            icon: const Icon(Icons.delete),
                           )
                         ],
                       ),
@@ -109,24 +105,9 @@ class _WiFiPageState extends State<WiFiPage> {
               icon: const Icon(Icons.restart_alt_rounded),
               iconSize: 40.0,
               onPressed: () {
-                mainBloc.add(GetWiFIEvent());
+                mainBloc.add(GetSavedWiFiEvent());
               },
               tooltip: 'Update',
-            ),
-            IconButton(
-              padding: const EdgeInsets.fromLTRB(2.0, 2.0, 2.0, 2.0),
-              icon: const Icon(Icons.save),
-              iconSize: 40.0,
-              onPressed: () {
-                final List saveResult = wifiForSave.values.toList();
-                if (saveResult.isNotEmpty) {
-                  mainBloc.add(
-                    SaveWiFiEvent([saveResult, true]),
-                  );
-                  wifiForSave = {};
-                }
-              },
-              tooltip: 'Save WiFi',
             ),
           ],
         ),
