@@ -28,7 +28,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final MainBloc mainBloc = BlocProvider.of<MainBloc>(context);
-    BlocProvider.of<MainBloc>(context).add(InitEvent());
     return Scaffold(
       appBar: AppBar(
         leading: PopupMenuButton(
@@ -119,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const Text('Status:'),
                   Text('$info'),
-                  Text('Background running ${settings?.runBackground}'),
+                  Text('Background running: ${settings?.runBackground}'),
                 ],
               );
             },
@@ -139,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                   icon: const Icon(Icons.restart_alt_rounded),
                   iconSize: 40.0,
                   onPressed: () {
-                    mainBloc.add(InitEvent());
+                    mainBloc.add(HomeUiUpdateEvent());
                   },
                   tooltip: 'Update',
                 ),

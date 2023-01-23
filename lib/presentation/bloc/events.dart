@@ -3,7 +3,6 @@ import 'package:blackout_light_on/domain/entities/settings_model.dart';
 
 abstract class ListEvent {}
 
-
 class InitEvent extends ListEvent {
   InitEvent();
 }
@@ -14,6 +13,7 @@ class GetWiFIEvent extends ListEvent {
 
 class BackgroundProcessEvent extends ListEvent {
   BackgroundCommands command;
+
   BackgroundProcessEvent(this.command);
 }
 
@@ -23,6 +23,7 @@ class GetSettingsEvent extends ListEvent {
 
 class SaveSettingsEvent extends ListEvent {
   Settings settings;
+
   SaveSettingsEvent(this.settings);
 }
 
@@ -36,5 +37,10 @@ class GetSavedWiFiEvent extends ListEvent {
 
 class SaveWiFiEvent extends ListEvent {
   List wifiList;
+
   SaveWiFiEvent(this.wifiList);
+}
+
+class HomeUiUpdateEvent extends ListEvent {
+  HomeUiUpdateEvent();
 }

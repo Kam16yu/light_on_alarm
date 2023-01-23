@@ -28,13 +28,12 @@ class _SettingPageState extends State<SettingPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Setting'),
+        title: const Text('Settings'),
         actions: [
           IconButton(
             onPressed: () {
               if (settings != null) {
                 mainBloc.add(SaveSettingsEvent(settings!));
-                mainBloc.add(InitEvent());
               }
             },
             icon: const Icon(Icons.save),
@@ -50,8 +49,9 @@ class _SettingPageState extends State<SettingPage> {
             final String info = state.data;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                duration: const Duration(seconds: 2),
+                duration: const Duration(seconds: 1),
                 content: Text(info),
+                dismissDirection: DismissDirection.horizontal,
               ),
             );
           }
@@ -60,8 +60,7 @@ class _SettingPageState extends State<SettingPage> {
           if (settings == null) {
             return const Icon(Icons.recycling);
           } else {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            return ListView(
               children: [
                 Row(
                   children: [
@@ -79,14 +78,15 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ],
                 ),
+                const Divider(thickness: 2.0),
                 const Text(
-                  'Detecting blackouts settings',
-                  style: TextStyle(fontSize: 17.0),
+                  'Methods of detecting blackouts (to enable mode for detect light on)',
+                  style: TextStyle(fontSize: 20.0),
                 ),
                 Row(
                   children: [
                     const Text(
-                      'Use mobile network type',
+                      'Mobile network type',
                       style: TextStyle(fontSize: 17.0),
                     ),
                     Checkbox(
@@ -102,7 +102,7 @@ class _SettingPageState extends State<SettingPage> {
                 Row(
                   children: [
                     const Text(
-                      'Use WiFi',
+                      'WiFi',
                       style: TextStyle(fontSize: 17.0),
                     ),
                     Checkbox(
@@ -115,9 +115,10 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ],
                 ),
+                const Divider(thickness: 2.0),
                 const Text(
-                  'Detecting light on settings',
-                  style: TextStyle(fontSize: 17.0),
+                  'Methods of detecting light on',
+                  style: TextStyle(fontSize: 20.0),
                 ),
                 Row(
                   children: [
@@ -138,7 +139,7 @@ class _SettingPageState extends State<SettingPage> {
                 Row(
                   children: [
                     const Text(
-                      'Use WiFi',
+                      'WiFi',
                       style: TextStyle(fontSize: 17.0),
                     ),
                     Checkbox(
@@ -151,9 +152,10 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ],
                 ),
+                const Divider(thickness: 2.0),
                 const Text(
                   'Background process control',
-                  style: TextStyle(fontSize: 17.0),
+                  style: TextStyle(fontSize: 20.0),
                 ),
                 Row(
                   children: [
@@ -163,7 +165,11 @@ class _SettingPageState extends State<SettingPage> {
                       onPressed: () {
                         settings?.runBackground = true;
                         mainBloc.add(
-                            BackgroundProcessEvent(BackgroundCommands.start),);
+                          BackgroundProcessEvent(BackgroundCommands.start),
+                        );
+                        if (settings != null) {
+                          mainBloc.add(SaveSettingsEvent(settings!));
+                        }
                       },
                     ),
                     IconButton(
@@ -171,8 +177,13 @@ class _SettingPageState extends State<SettingPage> {
                       onPressed: () {
                         settings?.runBackground = true;
                         mainBloc.add(
-                          BackgroundProcessEvent(BackgroundCommands.restart,),
+                          BackgroundProcessEvent(
+                            BackgroundCommands.restart,
+                          ),
                         );
+                        if (settings != null) {
+                          mainBloc.add(SaveSettingsEvent(settings!));
+                        }
                       },
                     ),
                     IconButton(
@@ -182,6 +193,9 @@ class _SettingPageState extends State<SettingPage> {
                         mainBloc.add(
                           BackgroundProcessEvent(BackgroundCommands.stop),
                         );
+                        if (settings != null) {
+                          mainBloc.add(SaveSettingsEvent(settings!));
+                        }
                       },
                     ),
                   ],

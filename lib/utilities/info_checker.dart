@@ -4,21 +4,6 @@ import 'dart:io';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:carrier_info/carrier_info.dart';
 import 'package:flutter/foundation.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-Future<bool> askDevicePermissions() async {
-  // Ask for permissions before requesting data
-  final locationIfUse = await Permission.locationWhenInUse.request();
-  final phone = await Permission.phone.request();
-  if (locationIfUse == PermissionStatus.granted &&
-      phone == PermissionStatus.granted) {
-    final locationAlways = await Permission.locationAlways.request();
-    if (locationAlways == PermissionStatus.granted) {
-      return true;
-    }
-  }
-  return false;
-}
 
 //Checking internet connection
 Future<bool> internetConnect() async {

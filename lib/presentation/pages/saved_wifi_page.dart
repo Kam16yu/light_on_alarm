@@ -80,7 +80,8 @@ class _SavedWiFiPageState extends State<SavedWiFiPage> {
                               setState(() {
                                 savedWiFiList.removeAt(index);
                               });
-                              mainBloc.add(SaveWiFiEvent([savedWiFiList, false]));
+                              mainBloc
+                                  .add(SaveWiFiEvent([savedWiFiList, false]));
                             },
                             icon: const Icon(Icons.delete),
                           )

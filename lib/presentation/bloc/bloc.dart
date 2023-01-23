@@ -1,4 +1,6 @@
 import 'dart:async';
+
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:blackout_light_on/domain/entities/background_commands.dart';
 import 'package:blackout_light_on/domain/entities/settings_model.dart';
 import 'package:blackout_light_on/domain/use_cases/operations.dart';
@@ -16,32 +18,60 @@ class MainBloc extends Bloc<ListEvent, ListState> {
     on<AskPermissionsEvent>(askPermissionsEvent);
     on<GetSavedWiFiEvent>(getSavedWiFiEvent);
     on<SaveWiFiEvent>(saveWiFiEvent);
+    on<HomeUiUpdateEvent>(homeUiUpdateEvent);
   }
 
   Future<void> initEvent(
     InitEvent event,
     Emitter<ListState> emitter,
   ) async {
-    final List info = await initModules();
-    emitter(HomePageState(info));
-    emitter(AlertUiState(info[1] as String));
-    // //Trigger UI update if a background process updates Box
+    //Trigger cycle UI update
     while (true) {
-      final Settings settings = await getSettings();
-      if (settings.useOnWiFi == true) {
-        final chekingResult = await checkWiFi();
-        if (chekingResult[0] == 0) {
-          emitter(AlertUiState(chekingResult[1] as String));
+      //Get program info and update UI
+      final info = await getStatusInfo();
+      emitter(HomePageState(info));
+      final Settings settings = info[0] as Settings;
+      //If granted permissions extend cycle timer and start checking
+      if (settings.grantedPermissions == true) {
+        await Future.delayed(const Duration(seconds: 30));
+
+        if (settings.useOnWiFi == true) {
+          final checkingWiFiResult = await checkWiFi();
+          if (checkingWiFiResult == 0) {
+            emitter(AlertUiState('not get saved WiFi'));
           }
-        if (chekingResult[0] == 1) {
-            emitter(AlertUiState('WiFi found'));
-        }
-        if (chekingResult[0] == 2) {
-          emitter(AlertUiState('WiFi not found'));
+          if (checkingWiFiResult == 1) {
+            emitter(AlertUiState('error of scanning WiFi'));
+          }
+          if (checkingWiFiResult == 2) {
+            AwesomeNotifications().createNotification(
+              content: NotificationContent(
+                id: 10,
+                channelKey: 'basic_channel',
+                title: 'Light on',
+                body: 'Detected wifi',
+                summary: 'Detected wifi',
+                notificationLayout: NotificationLayout.Default,
+                wakeUpScreen: true,
+              ),
+            );
+          }
+          if (checkingWiFiResult == 3) {
+            emitter(AlertUiState('WiFi not found'));
+          }
         }
       }
-      await Future.delayed(const Duration(minutes: 1));
+      //Timer
+      await Future.delayed(const Duration(seconds: 30));
     }
+  }
+
+  Future<void> homeUiUpdateEvent(
+    HomeUiUpdateEvent event,
+    Emitter<ListState> emitter,
+  ) async {
+    final info = await getStatusInfo();
+    emitter(HomePageState(info));
   }
 
   Future<void> getWiFIEvent(
@@ -97,7 +127,10 @@ class MainBloc extends Bloc<ListEvent, ListState> {
   ) async {
     final bool result = await askPermissions();
     if (result == true) {
-      final info = await initModules(permissionsGranted: true);
+      final settings = await getSettings();
+      settings.grantedPermissions = true;
+      await saveSettings(settings);
+      final info = await getStatusInfo();
       emitter(HomePageState(info));
     } else {
       emitter(AlertUiState('Not granted, please grant permissions'));
@@ -115,13 +148,16 @@ class MainBloc extends Bloc<ListEvent, ListState> {
       emitter(AlertUiState('Not have saved WiFi'));
     }
   }
+
   //Rewrite saved WiFi if event.wifiList[1] is false or add new if true
   Future<void> saveWiFiEvent(
     SaveWiFiEvent event,
     Emitter<ListState> emitter,
   ) async {
-    final result = await saveWiFi(event.wifiList[0] as List<List<String>>,
-        addNew: event.wifiList[1] as bool,);
+    final result = await saveWiFi(
+      event.wifiList[0] as List<List<String>>,
+      addNew: event.wifiList[1] as bool,
+    );
     if (result == true) {
       emitter(AlertUiState('Saved'));
     }
