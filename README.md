@@ -1,4 +1,4 @@
-# blackout_light_on
+light_on_alarm
 
 Blackout – light on detector
 
