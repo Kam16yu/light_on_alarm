@@ -2,6 +2,8 @@ light_on_alarm
 
 Blackout – light on detector
 
+[![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
