@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:blackout_light_on/domain/entities/background_commands.dart';
 import 'package:blackout_light_on/domain/entities/settings_model.dart';
 import 'package:blackout_light_on/domain/use_cases/operations.dart';
@@ -34,32 +33,7 @@ class MainBloc extends Bloc<ListEvent, ListState> {
       //If granted permissions extend cycle timer and start checking
       if (settings.grantedPermissions == true) {
         await Future.delayed(const Duration(seconds: 30));
-
-        if (settings.useOnWiFi == true) {
-          final checkingWiFiResult = await checkWiFi();
-          if (checkingWiFiResult == 0) {
-            emitter(AlertUiState('not get saved WiFi'));
-          }
-          if (checkingWiFiResult == 1) {
-            emitter(AlertUiState('error of scanning WiFi'));
-          }
-          if (checkingWiFiResult == 2) {
-            AwesomeNotifications().createNotification(
-              content: NotificationContent(
-                id: 10,
-                channelKey: 'basic_channel',
-                title: 'Light on',
-                body: 'Detected wifi',
-                summary: 'Detected wifi',
-                notificationLayout: NotificationLayout.Default,
-                wakeUpScreen: true,
-              ),
-            );
-          }
-          if (checkingWiFiResult == 3) {
-            emitter(AlertUiState('WiFi not found'));
-          }
-        }
+        await checkAndAlert(settings: settings);
       }
       //Timer
       await Future.delayed(const Duration(seconds: 30));
@@ -82,7 +56,7 @@ class MainBloc extends Bloc<ListEvent, ListState> {
     if (result[0] == true) {
       emitter(GetWiFiState(result[1] as List<List<String>>));
     } else {
-      emitter(AlertUiState('Not get WiFi,WiFi and location is activated?'));
+      emitter(AlertUiState('Not get WiFi, WiFi and location is activated?'));
     }
   }
 
@@ -111,10 +85,10 @@ class MainBloc extends Bloc<ListEvent, ListState> {
     Emitter<ListState> emitter,
   ) async {
     if (event.command == BackgroundCommands.start) {
-      startBackground();
+      startBackground(workFrequency: Duration(minutes: event.frequency));
     }
     if (event.command == BackgroundCommands.restart) {
-      restartBackground();
+      restartBackground(workFrequency: Duration(minutes: event.frequency));
     }
     if (event.command == BackgroundCommands.stop) {
       stopBackground();

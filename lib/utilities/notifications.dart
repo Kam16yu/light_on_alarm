@@ -2,6 +2,8 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:blackout_light_on/main.dart';
 import 'package:flutter/material.dart';
 
+const String channelKey = 'basic_channel';
+
 Future<void> initNotification() async {
   await AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
@@ -9,7 +11,7 @@ Future<void> initNotification() async {
     [
       NotificationChannel(
         channelGroupKey: 'basic_channel_group',
-        channelKey: 'basic_channel',
+        channelKey: channelKey,
         channelName: 'Basic notifications',
         channelDescription: 'Basic notification channel',
         defaultColor: const Color(0xFF9D50DD),
@@ -24,6 +26,19 @@ Future<void> initNotification() async {
       )
     ],
     debug: true,
+  );
+}
+
+Future<bool> createAlert ({required String alertText, bool wakeUpScreen=false}) {
+  return AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      id: 10,
+      channelKey: channelKey,
+      title: 'Light on',
+      body: alertText,
+      summary: alertText,
+      wakeUpScreen: true,
+    ),
   );
 }
 

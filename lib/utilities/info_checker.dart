@@ -6,10 +6,10 @@ import 'package:carrier_info/carrier_info.dart';
 import 'package:flutter/foundation.dart';
 
 //Checking internet connection
-Future<bool> internetConnect() async {
+Future<bool> internetConnect({String address = 'example.com'}) async {
   bool isOnline = false;
   try {
-    final result = await InternetAddress.lookup('example.com');
+    final result = await InternetAddress.lookup(address);
     isOnline = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
   } on SocketException catch (_) {
     isOnline = false;
@@ -28,16 +28,18 @@ Future<String> chargeState() async {
   final batteryState = await Battery().batteryState;
   return batteryState.toString();
 }
-
-Future<String?>? getCurrentNetworkStatus() async {
+///Return type of mobile network 2G,3G,4G,5G
+Future<String?>? getMobileNetworkStatus() async {
   // Platform messages may fail, so we use a try/catch PlatformException.
   try {
     if (Platform.isAndroid) {
       final info = await CarrierInfo.getAndroidInfo();
+
       return info?.telephonyInfo[0].networkGeneration;
     }
     if (Platform.isIOS) {
       final info = await CarrierInfo.getIosInfo();
+
       return info.carrierRadioAccessTechnologyTypeList[0];
     }
   } catch (e) {

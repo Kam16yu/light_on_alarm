@@ -3,13 +3,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<bool> saveLocalSettings(Settings obj) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setBool('firstRun', obj.firstRun);
+  await prefs.setBool('isBlackout', obj.isBlackout);
   await prefs.setBool('grantedPermissions', obj.grantedPermissions);
-  await prefs.setBool('useOffCarrier', obj.useOffCarrier);
+  await prefs.setBool('alwaysAlert', obj.alwaysAlert);
+  await prefs.setBool('useOffMobile3G4G5G', obj.useOffMobile3G4G5G);
   await prefs.setBool('useOffWiFi', obj.useOffWiFi);
-  await prefs.setBool('useOnCarrier', obj.useOnCarrier);
+  await prefs.setBool('useOffPing', obj.useOffPing);
+  await prefs.setBool('useOffChargeState', obj.useOffChargeState);
+  await prefs.setBool('useOnMobile3G4G5G', obj.useOnMobile3G4G5G);
   await prefs.setBool('useOnWiFi', obj.useOnWiFi);
+  await prefs.setBool('useOnPing', obj.useOnPing);
+  await prefs.setBool('useOnChargeState', obj.useOnChargeState);
   await prefs.setBool('runBackground', obj.runBackground);
+  await prefs.setInt('checkTiming', obj.checkTiming);
+  await prefs.setBool('manualOffOn', obj.manualOffOn);
+  await prefs.setStringList('ipAddressesForPing', obj.ipAddressesForPing);
+  await prefs.setBool('wakeUpScreenAlert', obj.wakeUpScreenAlert);
   return true;
 }
 
@@ -17,12 +26,21 @@ Future<bool> saveLocalSettings(Settings obj) async {
 Future<Settings> getLocalSettings() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   return Settings(
-    firstRun: prefs.getBool('firstRun') ?? true,
+    isBlackout: prefs.getBool('isBlackout') ?? false,
     grantedPermissions: prefs.getBool('grantedPermissions') ?? false,
-    useOffCarrier: prefs.getBool('useOffCarrier') ?? false,
+    alwaysAlert: prefs.getBool('alwaysAlert') ?? false,
+    useOffMobile3G4G5G: prefs.getBool('useOffMobile3G4G5G') ?? false,
     useOffWiFi: prefs.getBool('useOffWiFi') ?? false,
-    useOnCarrier: prefs.getBool('useOnCarrier') ?? false,
+    useOffPing: prefs.getBool('useOffPing') ?? false,
+    useOffChargeState: prefs.getBool('useOffChargeState') ?? false,
+    useOnMobile3G4G5G: prefs.getBool('useOnMobile3G4G5G') ?? false,
     useOnWiFi: prefs.getBool('useOnWiFi') ?? false,
+    useOnPing: prefs.getBool('useOnPing') ?? false,
+    useOnChargeState: prefs.getBool('useOnChargeState') ?? false,
     runBackground: prefs.getBool('runBackground') ?? false,
+    checkTiming: prefs.getInt('checkTiming') ?? 15,
+    manualOffOn: prefs.getBool('manualOffOn') ?? false,
+    ipAddressesForPing: prefs.getStringList('ipAddressesForPing') ?? ['example.com'],
+    wakeUpScreenAlert: prefs.getBool('wakeUpScreenAlert') ?? false,
   );
 }

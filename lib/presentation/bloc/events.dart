@@ -13,8 +13,8 @@ class GetWiFIEvent extends ListEvent {
 
 class BackgroundProcessEvent extends ListEvent {
   BackgroundCommands command;
-
-  BackgroundProcessEvent(this.command);
+  int frequency;
+  BackgroundProcessEvent(this.command, this.frequency);
 }
 
 class GetSettingsEvent extends ListEvent {
