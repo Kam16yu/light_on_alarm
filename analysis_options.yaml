@@ -14,12 +14,6 @@ include: package:lint/strict.yaml # For production apps
 # can be found at https://dart-lang.github.io/linter/lints/options/options.html
 linter:
   rules:
-    newline-before-return: true
-    no-boolean-literal-compare: true
-    no-empty-block: true
-    prefer-trailing-comma: true
-    prefer-conditional-expressions: true
-    no-equal-then-else: true
   # Util classes are awesome!
   # avoid_classes_with_only_static_members: false
 

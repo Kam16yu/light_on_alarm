@@ -308,24 +308,6 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    const Flexible(
-                      child: Text(
-                        'Enable manual control for blackout and light on modes',
-                        style: TextStyle(fontSize: 17.0),
-                      ),
-                    ),
-                    Checkbox(
-                      value: settings?.manualOffOn ?? false,
-                      onChanged: (value) {
-                        setState(() {
-                          settings?.manualOffOn = value!;
-                        });
-                      },
-                    ),
-                  ],
-                ),
                 const Text(
                   'Time between background checking:',
                   style: TextStyle(fontSize: 17.0),
